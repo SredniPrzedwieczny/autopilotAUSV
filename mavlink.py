@@ -7,6 +7,7 @@ from scipy.spatial import distance
 import numpy as np
 import PID
 import fileHandler
+import distanceMeters
 
 class mavlink:
 
@@ -20,8 +21,8 @@ class mavlink:
         self.waypoints = []
         self.myPt = [0, 0]
         self.myWP = [0, 0]
-        self.thresh = 0.05
-        self.Wthresh = 0.05
+        self.thresh = 5
+        self.Wthresh = 5
 
 
     def getDesiredAngle(self, pos, pt):
@@ -37,7 +38,7 @@ class mavlink:
 
     def controlUpdate(self, hdg, lat, lon):
         self.myPos = [lat, lon]
-        if distance.euclidean(self.myPos, self.myPt) < self.thresh:
+        if distanceMeters.getDistanceMeters(lat, lon, self.myPt[0], self.myPt[1]) < self.thresh:
             self.i = self.i+1
             if self.i < self.points[0].__len__():
                 self.myPt = [self.points[0][self.i], self.points[1][self.i]]
@@ -46,7 +47,7 @@ class mavlink:
                 stt["go"] = str(0)
                 self.setServos(1000, 1000)
                 return
-        if distance.euclidean(self.myPos, self.myWP) < self.Wthresh:
+        if distanceMeters.getDistanceMeters(lat, lon, self.myWP[0], self.myWP[1]) < self.Wthresh:
             self.Wi = self.Wi+1
             self.myWP = [self.waypoints[0][self.Wi], self.waypoints[1][self.Wi]]
         zadane = self.getDesiredAngle(self.myPos, self.myPt)

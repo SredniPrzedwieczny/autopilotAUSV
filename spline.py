@@ -19,7 +19,7 @@ def ptsToLine(pts):
     return lne
 
 def spline_pts(points, grain=10):
-    r = 0.1
+    r = 0.00003
     ptsNum = len(points)
     pts2 = [ points[0] ]
     for pt in points[1:]:

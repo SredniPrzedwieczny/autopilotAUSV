@@ -4,11 +4,11 @@ import fileHandler
 from scipy.spatial import Rectangle
 import numpy as np
 
-dMin = 0.5
-dX = 0.1
-dY = 0.1
-dR = 0.1
-dE = 0.01
+dMin = 0.0001
+dX = 0.0001
+dY = 0.0001
+dR = 0.00003
+dE = 0.00005
 
 def line():
     lne = fileHandler.loadJsonFromFile('line.json')
@@ -53,7 +53,7 @@ def detectCol():
         b = ry - a*rx
         d = abs(b)/(a**2 + 1)**0.5
 
-        if d==dMin:
+        if d <= dMin:
             obst = Rectangle(maxes=[x+dX,y+dY], mins=[x-dX,y-dY])
             colShips.append([obst, vx, vy])
 
