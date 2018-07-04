@@ -10,7 +10,7 @@ class S(BaseHTTPRequestHandler):
     line = []
     lne = {"line": []}
     sps = {"ships": []}
-    stt = {"dph": 0.1, "lng": 20, "go": 0, "lat": 50, "vx": 0, "vy": 0, "hed": 80}
+    stt = {"dph": 0.1, "lng": 20, "go": 0, "arm": 0, "lat": 50, "vx": 0, "vy": 0, "hed": 80}
     pts = {"points": []}
 
     def _set_headers(self):
@@ -89,15 +89,23 @@ class S(BaseHTTPRequestHandler):
             dataToWrite = json.dumps(self.pts).encode('ascii')
             self.wfile.write(dataToWrite)
         if 'start' in path:
-            self.sps = fileHandler.loadJsonFromFile('ships.json')
-            self.sps["go"] = 1
+            self.stt = fileHandler.loadJsonFromFile('state.json')
+            if int(self.stt["arm"]) == 1:
+                self.stt["go"] = 1
+                fileHandler.saveStateToFile(self.stt)
+                self._set_headers()
+                dataToWrite = json.dumps(self.lne).encode('ascii')
+                self.wfile.write(dataToWrite)
+        if 'stop' in path:
+            self.stt = fileHandler.loadJsonFromFile('state.json')
+            self.stt["go"] = 0
             fileHandler.saveStateToFile(self.stt)
             self._set_headers()
             dataToWrite = json.dumps(self.lne).encode('ascii')
             self.wfile.write(dataToWrite)
-        if 'stop' in path:
-            self.sps = fileHandler.loadJsonFromFile('ships.json')
-            self.sps["go"] = 0
+        if 'arm' in path:
+            self.stt = fileHandler.loadJsonFromFile('state.json')
+            self.stt["arm"] = 1
             fileHandler.saveStateToFile(self.stt)
             self._set_headers()
             dataToWrite = json.dumps(self.lne).encode('ascii')

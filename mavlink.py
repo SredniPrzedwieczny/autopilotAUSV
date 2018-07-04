@@ -23,6 +23,7 @@ class mavlink:
         self.myWP = [0, 0]
         self.thresh = 5
         self.Wthresh = 5
+        self.amArmed = False
 
 
     def getDesiredAngle(self, pos, pt):
@@ -45,7 +46,7 @@ class mavlink:
             else:
                 stt = fileHandler.loadJsonFromFile('state.json')
                 stt["go"] = str(0)
-                self.setServos(1000, 1000)
+                self.setServos(0, 0)
                 return
         if distanceMeters.getDistanceMeters(lat, lon, self.myWP[0], self.myWP[1]) < self.Wthresh:
             self.Wi = self.Wi+1
@@ -61,11 +62,11 @@ class mavlink:
             wejscie = -math.pi/2
 
         if wejscie > 0:
-            Fl = 2000-wejscie*1000/math.pi
-            Fr = 2000
+            Fl = 1000-wejscie*1000/math.pi
+            Fr = 1000
         else:
-            Fr = 2000+wejscie*1000/math.pi
-            Fl = 2000
+            Fr = 1000+wejscie*1000/math.pi
+            Fl = 1000
         self.setServos(Fl, Fr)
 
 
